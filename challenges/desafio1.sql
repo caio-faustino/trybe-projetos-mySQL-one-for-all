@@ -4,71 +4,71 @@ DROP DATABASE IF EXISTS SpotifyClone;
 CREATE DATABASE SpotifyClone;
 USE SpotifyClone;
 
-CREATE TABLE IF NOT EXISTS plans (
+CREATE TABLE IF NOT EXISTS tabela_plano (
     id_plan INT PRIMARY KEY AUTO_INCREMENT,
-    plan_name VARCHAR(45) NOT NULL,
+    nome_plano VARCHAR(45) NOT NULL,
     plan_value DECIMAL(3 , 2 ) NOT NULL
 )ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS users (
-    id_user INT PRIMARY KEY AUTO_INCREMENT,
-    user_name VARCHAR(100) NOT NULL,
+CREATE TABLE IF NOT EXISTS usuarios (
+    id_artista INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_nome VARCHAR(100) NOT NULL,
     user_age INT NOT NULL,
     plan_signing_date DATE NOT NULL,
     user_id_plan INT NOT NULL,
     FOREIGN KEY (user_id_plan)
-        REFERENCES plans (id_plan)
+        REFERENCES tabela_plano (id_plan)
 )ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS artists (
+CREATE TABLE IF NOT EXISTS tabela_artista (
     id_artist INT PRIMARY KEY AUTO_INCREMENT,
-    artist_name VARCHAR(100) NOT NULL
+    nome_artista VARCHAR(100) NOT NULL
 )ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS albums (
+CREATE TABLE IF NOT EXISTS tabela_album (
     id_album INT PRIMARY KEY AUTO_INCREMENT,
-    album_name VARCHAR(100) NOT NULL,
+    nome_album VARCHAR(100) NOT NULL,
     album_release_year INT NOT NULL,
     artist_id_album INT NOT NULL,
     FOREIGN KEY (artist_id_album)
-        REFERENCES artists (id_artist)
+        REFERENCES tabela_artista (id_artist)
 )ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS songs (
+CREATE TABLE IF NOT EXISTS tabela_musica (
     id_song INT PRIMARY KEY AUTO_INCREMENT,
-    song_name VARCHAR(100) NOT NULL,
+    nome_musica VARCHAR(100) NOT NULL,
     song_duration_seconds INT NOT NULL,
-    songs_id_album INT NOT NULL,
-    FOREIGN KEY (songs_id_album)
-        REFERENCES albums (id_album)
+    tabela_musica_id_album INT NOT NULL,
+    FOREIGN KEY (tabela_musica_id_album)
+        REFERENCES tabela_album (id_album)
 )ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS following_artists (
-    id_user INT NOT NULL,
+CREATE TABLE IF NOT EXISTS artista_seguido (
+    id_artista INT NOT NULL,
     id_artist INT NOT NULL,    
-    PRIMARY KEY (id_user, id_artist),
-    FOREIGN KEY (id_user)
-        REFERENCES users (id_user),
+    PRIMARY KEY (id_artista, id_artist),
+    FOREIGN KEY (id_artista)
+        REFERENCES usuarios (id_artista),
     FOREIGN KEY (id_artist)
-        REFERENCES artists (id_artist)
+        REFERENCES tabela_artista (id_artist)
 )ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS playback_history (
-    playback_id_user INT NOT NULL,
+CREATE TABLE IF NOT EXISTS tabela_historico (
+    id_musica INT NOT NULL,
     playback_id_song INT NOT NULL,
     playback_date DATETIME NOT NULL,
-    PRIMARY KEY (playback_id_user, playback_id_song),
+    PRIMARY KEY (id_musica, playback_id_song),
     FOREIGN KEY (playback_id_song)
-        REFERENCES songs (id_song),
-    FOREIGN KEY (playback_id_user)
-        REFERENCES users (id_user)
+        REFERENCES tabela_musica (id_song),
+    FOREIGN KEY (id_musica)
+        REFERENCES usuarios (id_artista)
 )ENGINE = InnoDB;
 
 -- Insert DATA INFOR
 
--- SELECT * FROM artists;
+-- SELECT * FROM tabela_artista;
 
-INSERT INTO artists (id_artist, artist_name) VALUES
+INSERT INTO tabela_artista (id_artist, nome_artista) VALUES
 	(1, "Beyoncé"),
 	(2, "Queen"),
 	(3, "Elis Regina"),
@@ -76,17 +76,17 @@ INSERT INTO artists (id_artist, artist_name) VALUES
 	(5, "Blind Guardian"),
 	(6, "Nina Simone");
 
--- SELECT * FROM plans;
+-- SELECT * FROM tabela_plano;
 
-INSERT INTO plans (id_plan, plan_name, plan_value) VALUES
+INSERT INTO tabela_plano (id_plan, nome_plano, plan_value) VALUES
 	(1, "gratuito", 0),
 	(2, "familiar", 7.99),
 	(3, "universitário", 5.99),
 	(4, "pessoal", 6.99);
 
--- SELECT * FROM albums;
+-- SELECT * FROM tabela_album;
 
-INSERT INTO albums (id_album, album_name, album_release_year, artist_id_album) VALUES
+INSERT INTO tabela_album (id_album, nome_album, album_release_year, artist_id_album) VALUES
 	(1, "Renaissance", 2022, 1),
 	(2, "Jazz", 1978, 2),
 	(3, "Hot Space", 1982, 2),
@@ -96,9 +96,9 @@ INSERT INTO albums (id_album, album_name, album_release_year, artist_id_album) V
 	(7, "Somewhere Far Beyond", 2007, 5),
 	(8, "I Put A Spell On You", 2012, 6);
 
--- SELECT * FROM songs;
+-- SELECT * FROM tabela_musica;
 
-INSERT INTO songs (id_song, song_name, song_duration_seconds, songs_id_album) VALUES
+INSERT INTO tabela_musica (id_song, nome_musica, song_duration_seconds, tabela_musica_id_album) VALUES
 	(1, "BREAK MY SOUL", 279, 1),
 	(2, "VIRGO'S GROOVE", 369, 1),
 	(3, "ALIEN SUPERSTAR", 116, 1),
@@ -110,9 +110,9 @@ INSERT INTO songs (id_song, song_name, song_duration_seconds, songs_id_album) VA
 	(9, "The Bard's Song", 244, 7),
 	(10, "Feeling Good", 100, 8);
 
--- SELECT * FROM users;
+-- SELECT * FROM usuarios;
 
-INSERT INTO users (id_user, user_name, user_age, plan_signing_date, user_id_plan) VALUES
+INSERT INTO usuarios (id_artista, usuario_nome, user_age, plan_signing_date, user_id_plan) VALUES
 	(1, "Barbara Liskov", 82, "2019-10-20", 1),
 	(2, "Robert Cecil Martin", 58, "2017-01-06", 1),
 	(3, "Ada Lovelace", 37, "2017-12-30", 2),
@@ -124,9 +124,9 @@ INSERT INTO users (id_user, user_name, user_age, plan_signing_date, user_id_plan
 	(9, "Judith Butler", 45, "2020-05-13", 4),
 	(10, "Jorge Amado", 58, "2017-02-17", 4);
 
--- SELECT * FROM following_artists;
+-- SELECT * FROM artista_seguido;
 
-INSERT INTO following_artists (id_user, id_artist) VALUES
+INSERT INTO artista_seguido (id_artista, id_artist) VALUES
 	(1, 1),
 	(1, 2),
 	(1, 3),
@@ -142,9 +142,9 @@ INSERT INTO following_artists (id_user, id_artist) VALUES
 	(9, 3),
 	(10, 2);
 
--- SELECT * FROM playback_history;
+-- SELECT * FROM tabela_historico;
 
-INSERT INTO playback_history (playback_id_user, playback_id_song, playback_date) VALUES
+INSERT INTO tabela_historico (id_musica, playback_id_song, playback_date) VALUES
 	(1, 8, "2022-02-28 10:45:55"),
 	(1, 2, "2020-05-02 05:30:35"),
 	(1, 10, "2020-03-06 11:22:33"),
