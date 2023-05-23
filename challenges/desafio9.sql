@@ -1,13 +1,15 @@
+-- A consulta abaixo retorna o número de músicas no histórico de reprodução de um usuário específico.
+
 SELECT 
--- Conta o número de ocorrências do campo "id_musica_historico" na tabela "historico_reproducao" e atribui um alias "musicas_no_historico" ao resultado
-    COUNT(historico_base_dados.id_musica_historico) AS musicas_no_historico 
+-- Conta o número de registros no histórico de reprodução para o usuário e atribui o alias 'musicas_no_historico'.
+    COUNT(base_dados_reproducao.id_historico_reproducao_musica) AS musicas_no_historico 
 FROM
--- Define a tabela "historico_reproducao" com um alias "historico_base_dados"
-    SpotifyClone.historico_reproducao AS historico_base_dados, 
--- Define a tabela "usuario" com um alias "usuario_base_dados"
-    SpotifyClone.usuario AS usuario_base_dados 
+-- Tabela 'historico_reproducao' é referenciada pelo alias 'base_dados_reproducao'.
+    SpotifyClone.historico_reproducao AS base_dados_reproducao, 
+-- Tabela 'usuarios' é referenciada pelo alias 'base_dados_usuario'.
+    SpotifyClone.usuarios AS base_dados_usuario 
 WHERE
--- Aplica a condição de junção entre as tabelas "historico_reproducao" e "usuario" usando as colunas "id_usuario_historico" e "id_usuario"
-    historico_base_dados.id_usuario_historico = usuario_base_dados.id_usuario 
--- Aplica a condição de filtragem onde o valor da coluna "nome_usuario" da tabela "usuario" é igual a 'Barbara Liskov'
-        AND usuario_base_dados.nome_usuario = 'Barbara Liskov'; 
+-- Condição para a junção entre as tabelas usando as colunas 'id_reproducao_usuario' da tabela 'historico_reproducao' e 'id_usuario' da tabela 'usuarios'.
+    base_dados_reproducao.id_reproducao_usuario = base_dados_usuario.id_usuario 
+-- Condição para filtrar os registros onde o nome do usuário é 'Barbara Liskov'.
+        AND base_dados_usuario.nome_usuario = 'Barbara Liskov'; 

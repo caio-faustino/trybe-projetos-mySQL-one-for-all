@@ -1,27 +1,25 @@
+-- A consulta abaixo retorna o nome do artista, o nome do álbum e o número de pessoas seguidoras de cada artista e álbum.
+
 SELECT 
--- Seleciona a coluna "nome_artista" da tabela "artistas" e a renomeia como "artista"
-    artistas_base_dados.nome_artista AS artista,
--- Seleciona a coluna "nome_album" da tabela "albuns" e a renomeia como "album" 
-    album_base_dados.nome_album AS album, 
--- Conta o número de ocorrências da coluna "id_artista" da tabela "seguidor_artista" e a renomeia como "pessoas_seguidoras"
-    COUNT(seguidor_base_dados.id_artista) AS pessoas_seguidoras 
-
+-- Seleciona o nome do artista e atribui o alias 'artista'.
+    base_dados_artista.nome_artista AS artista, 
+-- Seleciona o nome do álbum e atribui o alias 'album'.
+    base_dados_album.nome_album AS album, 
+-- Conta o número de registros na tabela 'artistas_seguidos' para cada artista e álbum e atribui o alias 'pessoas_seguidoras'.
+    COUNT(base_dados_seguido.id_artista) AS pessoas_seguidoras 
 FROM
--- Define a tabela "artistas" com um alias "artistas_base_dados"
-    SpotifyClone.artistas AS artistas_base_dados, 
--- Define a tabela "albuns" com um alias "album_base_dados"
-    SpotifyClone.albuns AS album_base_dados, 
--- Define a tabela "seguidor_artista" com um alias "seguidor_base_dados"
-    SpotifyClone.seguidor_artista AS seguidor_base_dados 
-
+-- Tabela 'artistas' é referenciada pelo alias 'base_dados_artista'.
+    SpotifyClone.artistas AS base_dados_artista, 
+-- Tabela 'albuns' é referenciada pelo alias 'base_dados_album'.
+    SpotifyClone.albuns AS base_dados_album, 
+-- Tabela 'artistas_seguidos' é referenciada pelo alias 'base_dados_seguido'.
+    SpotifyClone.artistas_seguidos AS base_dados_seguido 
 WHERE
--- Aplica a condição de junção entre as tabelas "artistas" e "albuns" usando as colunas "id_artista" e "id_album_artista"
-    artistas_base_dados.id_artista = album_base_dados.id_album_artista 
--- Aplica a condição de junção entre as tabelas "seguidor_artista" e "albuns" usando as colunas "id_artista" e "id_album_artista"
-        AND seguidor_base_dados.id_artista = album_base_dados.id_album_artista 
-
-
--- Agrupa os resultados pelo valor das colunas "artista" e "album"
+-- Condição para a junção entre as tabelas usando as colunas 'id_artista' da tabela 'artistas' e 'id_album_artista' da tabela 'albuns'.
+    base_dados_artista.id_artista = base_dados_album.id_album_artista 
+-- Condição para a junção entre as tabelas usando as colunas 'id_artista' da tabela 'artistas_seguidos' e 'id_album_artista' da tabela 'albuns'.
+        AND base_dados_seguido.id_artista = base_dados_album.id_album_artista 
+-- Agrupa os resultados pelo nome do artista e do álbum.
 GROUP BY artista, album 
--- Ordena os resultados de forma decrescente pela coluna "pessoas_seguidoras" e, em caso de empate, pelo valor das colunas "artista" e "album"
+-- Ordena os resultados em ordem decrescente de pessoas seguidoras, e, em caso de empate, em ordem ascendente pelo nome do artista e do álbum.
 ORDER BY pessoas_seguidoras DESC, artista, album; 

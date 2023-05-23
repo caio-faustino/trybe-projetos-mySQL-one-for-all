@@ -1,85 +1,76 @@
--- Remove o banco de dados SpotifyClone, se existir
+-- Criação do banco de dados SpotifyClone
 DROP DATABASE IF EXISTS SpotifyClone;
-
--- Cria o banco de dados SpotifyClone
 CREATE DATABASE SpotifyClone;
-
--- Utiliza o banco de dados SpotifyClone
 USE SpotifyClone;
 
--- Cria a tabela "planos" com as colunas id_plano, nome_plano e valor_plano
+-- Criação da tabela planos
 CREATE TABLE IF NOT EXISTS planos (
     id_plano INT PRIMARY KEY AUTO_INCREMENT,
     nome_plano VARCHAR(45) NOT NULL,
-    valor_plano DECIMAL(3 , 2 ) NOT NULL
-)ENGINE = InnoDB;
+    valor_plano DECIMAL(3, 2) NOT NULL
+) ENGINE = InnoDB;
 
--- Cria a tabela "usuario" com as colunas id_usuario, nome_usuario, usuario_idade, data_assinatura_plano e id_plano_usuario
--- Também define uma chave estrangeira (FOREIGN KEY) referenciando a tabela "planos"
-CREATE TABLE IF NOT EXISTS usuario (
+-- Criação da tabela usuarios
+CREATE TABLE IF NOT EXISTS usuarios (
     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
     nome_usuario VARCHAR(100) NOT NULL,
-    usuario_idade INT NOT NULL,
+    idade_usuario INT NOT NULL,
     data_assinatura_plano DATE NOT NULL,
     id_plano_usuario INT NOT NULL,
     FOREIGN KEY (id_plano_usuario)
         REFERENCES planos (id_plano)
-)ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
--- Cria a tabela "artistas" com as colunas id_artista e nome_artista
+-- Criação da tabela artistas
 CREATE TABLE IF NOT EXISTS artistas (
     id_artista INT PRIMARY KEY AUTO_INCREMENT,
     nome_artista VARCHAR(100) NOT NULL
-)ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
--- Cria a tabela "albuns" com as colunas id_album, nome_album, ano_lancamento_album e id_album_artista
--- Também define uma chave estrangeira (FOREIGN KEY) referenciando a tabela "artistas"
+-- Criação da tabela albuns
 CREATE TABLE IF NOT EXISTS albuns (
     id_album INT PRIMARY KEY AUTO_INCREMENT,
     nome_album VARCHAR(100) NOT NULL,
-    ano_lancamento_album INT NOT NULL,
+    data_lancamento_album INT NOT NULL,
     id_album_artista INT NOT NULL,
     FOREIGN KEY (id_album_artista)
         REFERENCES artistas (id_artista)
-)ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
--- Cria a tabela "musicas" com as colunas id_musica, nome_musica, duracao_musica_sec e id_musica_album
--- Também define uma chave estrangeira (FOREIGN KEY) referenciando a tabela "albuns"
+-- Criação da tabela musicas
 CREATE TABLE IF NOT EXISTS musicas (
     id_musica INT PRIMARY KEY AUTO_INCREMENT,
     nome_musica VARCHAR(100) NOT NULL,
     duracao_musica_sec INT NOT NULL,
-    id_musica_album INT NOT NULL,
-    FOREIGN KEY (id_musica_album)
+    id_album_musicas INT NOT NULL,
+    FOREIGN KEY (id_album_musicas)
         REFERENCES albuns (id_album)
-)ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
--- Cria a tabela "seguidor_artista" com as colunas id_usuario e id_artista
--- Também define uma chave primária composta e duas chaves estrangeiras (FOREIGN KEY) referenciando as tabelas "usuario" e "artistas"
-CREATE TABLE IF NOT EXISTS seguidor_artista (
+-- Criação da tabela artistas_seguidos
+CREATE TABLE IF NOT EXISTS artistas_seguidos (
     id_usuario INT NOT NULL,
-    id_artista INT NOT NULL,    
+    id_artista INT NOT NULL,
     PRIMARY KEY (id_usuario, id_artista),
     FOREIGN KEY (id_usuario)
-        REFERENCES usuario (id_usuario),
+        REFERENCES usuarios (id_usuario),
     FOREIGN KEY (id_artista)
         REFERENCES artistas (id_artista)
-)ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
--- Cria a tabela "historico_reproducao" com as colunas id_usuario_historico, id_musica_historico e data_reproducao
--- Também define uma chave primária composta e duas chaves estrangeiras (FOREIGN KEY) referenciando as tabelas "musicas" e "usuario"
+-- Criação da tabela historico_reproducao
 CREATE TABLE IF NOT EXISTS historico_reproducao (
-    id_usuario_historico INT NOT NULL,
-    id_musica_historico INT NOT NULL,
+    id_reproducao_usuario INT NOT NULL,
+    id_historico_reproducao_musica INT NOT NULL,
     data_reproducao DATETIME NOT NULL,
-    PRIMARY KEY (id_usuario_historico, id_musica_historico),
-    FOREIGN KEY (id_musica_historico)
+    PRIMARY KEY (id_reproducao_usuario, id_historico_reproducao_musica),
+    FOREIGN KEY (id_historico_reproducao_musica)
         REFERENCES musicas (id_musica),
-    FOREIGN KEY (id_usuario_historico)
-        REFERENCES usuario (id_usuario)
-)ENGINE = InnoDB;
+    FOREIGN KEY (id_reproducao_usuario)
+        REFERENCES usuarios (id_usuario)
+) ENGINE = InnoDB;
 
--- Insere dados na tabela "artistas"
+-- Inserção de dados na tabela artistas
 INSERT INTO artistas (id_artista, nome_artista) VALUES
     (1, "Beyoncé"),
     (2, "Queen"),
@@ -88,15 +79,15 @@ INSERT INTO artistas (id_artista, nome_artista) VALUES
     (5, "Blind Guardian"),
     (6, "Nina Simone");
 
--- Insere dados na tabela "planos"
+-- Inserção de dados na tabela planos
 INSERT INTO planos (id_plano, nome_plano, valor_plano) VALUES
     (1, "gratuito", 0),
     (2, "familiar", 7.99),
     (3, "universitário", 5.99),
     (4, "pessoal", 6.99);
 
--- Insere dados na tabela "albuns"
-INSERT INTO albuns (id_album, nome_album, ano_lancamento_album, id_album_artista) VALUES
+-- Inserção de dados na tabela albuns
+INSERT INTO albuns (id_album, nome_album, data_lancamento_album, id_album_artista) VALUES
     (1, "Renaissance", 2022, 1),
     (2, "Jazz", 1978, 2),
     (3, "Hot Space", 1982, 2),
@@ -106,8 +97,8 @@ INSERT INTO albuns (id_album, nome_album, ano_lancamento_album, id_album_artista
     (7, "Somewhere Far Beyond", 2007, 5),
     (8, "I Put A Spell On You", 2012, 6);
 
--- Insere dados na tabela "musicas"
-INSERT INTO musicas (id_musica, nome_musica, duracao_musica_sec, id_musica_album) VALUES
+-- Inserção de dados na tabela musicas
+INSERT INTO musicas (id_musica, nome_musica, duracao_musica_sec, id_album_musicas) VALUES
     (1, "BREAK MY SOUL", 279, 1),
     (2, "VIRGO'S GROOVE", 369, 1),
     (3, "ALIEN SUPERSTAR", 116, 1),
@@ -119,8 +110,8 @@ INSERT INTO musicas (id_musica, nome_musica, duracao_musica_sec, id_musica_album
     (9, "The Bard's Song", 244, 7),
     (10, "Feeling Good", 100, 8);
 
--- Insere dados na tabela "usuario"
-INSERT INTO usuario (id_usuario, nome_usuario, usuario_idade, data_assinatura_plano, id_plano_usuario) VALUES
+-- Inserção de dados na tabela usuarios
+INSERT INTO usuarios (id_usuario, nome_usuario, idade_usuario, data_assinatura_plano, id_plano_usuario) VALUES
     (1, "Barbara Liskov", 82, "2019-10-20", 1),
     (2, "Robert Cecil Martin", 58, "2017-01-06", 1),
     (3, "Ada Lovelace", 37, "2017-12-30", 2),
@@ -132,8 +123,8 @@ INSERT INTO usuario (id_usuario, nome_usuario, usuario_idade, data_assinatura_pl
     (9, "Judith Butler", 45, "2020-05-13", 4),
     (10, "Jorge Amado", 58, "2017-02-17", 4);
 
--- Insere dados na tabela "seguidor_artista"
-INSERT INTO seguidor_artista (id_usuario, id_artista) VALUES
+-- Inserção de dados na tabela artistas_seguidos
+INSERT INTO artistas_seguidos (id_usuario, id_artista) VALUES
     (1, 1),
     (1, 2),
     (1, 3),
@@ -149,8 +140,8 @@ INSERT INTO seguidor_artista (id_usuario, id_artista) VALUES
     (9, 3),
     (10, 2);
 
--- Insere dados na tabela "historico_reproducao"
-INSERT INTO historico_reproducao (id_usuario_historico, id_musica_historico, data_reproducao) VALUES
+-- Inserção de dados na tabela historico_reproducao
+INSERT INTO historico_reproducao (id_reproducao_usuario, id_historico_reproducao_musica, data_reproducao) VALUES
     (1, 8, "2022-02-28 10:45:55"),
     (1, 2, "2020-05-02 05:30:35"),
     (1, 10, "2020-03-06 11:22:33"),

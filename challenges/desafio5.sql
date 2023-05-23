@@ -1,16 +1,21 @@
+-- A consulta abaixo retorna as duas músicas mais reproduzidas, juntamente com o número de reproduções de cada uma.
+
 SELECT 
--- Seleciona a coluna "nome_musica" da tabela "musicas_base_dados" e atribui um alias "cancao" ao resultado
-    musicas_base_dados.nome_musica AS cancao, 
--- Conta o número de ocorrências da coluna "id_musica_historico" da tabela "historico_base_dados" e atribui um alias "reproducoes" ao resultado
-    COUNT(historico_base_dados.id_musica_historico) AS reproducoes 
+-- Seleciona o nome da música e atribui o alias 'cancao'.
+    base_dados_musica.nome_musica AS cancao, 
+-- Conta o número de registros no histórico de reprodução para cada música e atribui o alias 'reproducoes'.
+    COUNT(base_dados_reproducao.id_historico_reproducao_musica) AS reproducoes 
 FROM
--- Especifica a tabela "musicas" da base de dados "SpotifyClone" e atribui um alias "musicas_base_dados"
-    SpotifyClone.musicas AS musicas_base_dados 
--- Realiza uma junção interna entre a tabela "musicas_base_dados" e a tabela "historico_base_dados" com base na condição de igualdade entre as colunas "id_musica" e "id_musica_historico"
-    INNER JOIN SpotifyClone.historico_reproducao AS historico_base_dados ON musicas_base_dados.id_musica = historico_base_dados.id_musica_historico
--- Agrupa os resultados pela coluna "cancao"
+-- Tabela 'musicas' é referenciada pelo alias 'base_dados_musica'.
+    SpotifyClone.musicas AS base_dados_musica 
+        INNER JOIN
+-- Tabela 'historico_reproducao' é referenciada pelo alias 'base_dados_reproducao'.
+    SpotifyClone.historico_reproducao AS base_dados_reproducao 
+-- Realiza o inner join entre as tabelas utilizando a coluna 'id_musica' da tabela 'musicas' e 'id_historico_reproducao_musica' da tabela 'historico_reproducao'.
+        ON base_dados_musica.id_musica = base_dados_reproducao.id_historico_reproducao_musica 
+-- Agrupa os resultados pelo nome da música.
 GROUP BY cancao 
--- Ordena os resultados em ordem descendente com base na coluna "reproducoes" e em ordem ascendente com base na coluna "cancao"
+-- Ordena os resultados em ordem decrescente de reproduções e, em caso de empate, em ordem ascendente pelo nome da música.
 ORDER BY reproducoes DESC, cancao ASC 
--- Limita o número de resultados retornados para 2
+-- Limita o resultado a duas linhas.
 LIMIT 2; 

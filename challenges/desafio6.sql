@@ -1,18 +1,17 @@
--- Seleciona o valor mínimo do faturamento e atribui à coluna "faturamento_minimo"
-SELECT MIN(plano_base_dados.valor_plano) AS faturamento_minimo,
+-- A consulta abaixo retorna informações sobre o faturamento dos planos de usuários.
 
--- Seleciona o valor máximo do faturamento e atribui à coluna "faturamento_maximo"
-       MAX(plano_base_dados.valor_plano) AS faturamento_maximo,
-
--- Calcula a média do faturamento, arredondada para duas casas decimais, e atribui à coluna "faturamento_medio"
-       ROUND(AVG(plano_base_dados.valor_plano), 2) AS faturamento_medio,
-
--- Calcula a soma total do faturamento e atribui à coluna "faturamento_total"
-       SUM(plano_base_dados.valor_plano) AS faturamento_total
-       
--- Define a tabela principal da consulta como "SpotifyClone.usuario" com alias "usuario_base_dados"
-FROM SpotifyClone.usuario AS usuario_base_dados
-
--- Realiza uma junção interna (INNER JOIN) com a tabela "SpotifyClone.planos" com alias "plano_base_dados"
--- A junção é feita utilizando a coluna "id_plano_usuario" da tabela "usuario" e a coluna "id_plano" da tabela "planos"
-INNER JOIN SpotifyClone.planos AS plano_base_dados ON usuario_base_dados.id_plano_usuario = plano_base_dados.id_plano;
+SELECT 
+-- Seleciona o valor mínimo do plano e atribui o alias 'faturamento_minimo'.
+    MIN(base_dados_plano.valor_plano) AS faturamento_minimo, 
+-- Seleciona o valor máximo do plano e atribui o alias 'faturamento_maximo'.
+    MAX(base_dados_plano.valor_plano) AS faturamento_maximo, 
+-- Calcula o valor médio do plano, arredondado para 2 casas decimais, e atribui o alias 'faturamento_medio'.
+    ROUND(AVG(base_dados_plano.valor_plano), 2) AS faturamento_medio, 
+-- Calcula o valor total do faturamento somando todos os valores do plano e atribui o alias 'faturamento_total'.
+    SUM(base_dados_plano.valor_plano) AS faturamento_total 
+FROM
+-- Tabela 'usuarios' é referenciada pelo alias 'base_dados_usuario'.
+    SpotifyClone.usuarios AS base_dados_usuario 
+        INNER JOIN
+-- Realiza um join interno entre as tabelas 'usuarios' e 'planos' utilizando a coluna 'id_plano_usuario' da tabela 'usuarios' e 'id_plano' da tabela 'planos'.
+    SpotifyClone.planos AS base_dados_plano ON base_dados_usuario.id_plano_usuario = base_dados_plano.id_plano; 

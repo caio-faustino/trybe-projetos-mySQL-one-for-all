@@ -1,23 +1,25 @@
+-- A consulta abaixo retorna o nome dos usuários, a quantidade de músicas ouvidas por cada um e o total de minutos ouvidos.
+
 SELECT 
--- Seleciona a coluna "nome_usuario" e atribui um alias "pessoa_usuaria" ao resultado
+-- Seleciona o nome do usuário e atribui o alias 'pessoa_usuaria'.
     nome_usuario AS pessoa_usuaria, 
--- Conta a quantidade de ocorrências da coluna "id_musica_historico" da tabela "historico_base_dados" e atribui um alias "musicas_ouvidas" ao resultado
-    COUNT(historico_base_dados.id_musica_historico) AS musicas_ouvidas, 
--- Calcula a soma da coluna "duracao_musica_sec" da tabela "musicas_base_dados", divide por 60 e arredonda para duas casas decimais. Atribui um alias "total_minutos" ao resultado
+-- Conta o número de registros de reprodução de música para cada usuário e atribui o alias 'musicas_ouvidas'.
+    COUNT(base_dados_reproducao.id_historico_reproducao_musica) AS musicas_ouvidas, 
+-- Calcula o total de minutos ouvidos por cada usuário, convertendo a duração das músicas de segundos para minutos, e atribui o alias 'total_minutos'.
     ROUND(SUM(duracao_musica_sec) / 60, 2) AS total_minutos 
 FROM
--- Especifica a tabela "usuario" da base de dados "SpotifyClone" e atribui um alias "usuario_base_dados"
-    SpotifyClone.usuario AS usuario_base_dados, 
--- Especifica a tabela "historico_reproducao" da base de dados "SpotifyClone" e atribui um alias "historico_base_dados"
-    SpotifyClone.historico_reproducao AS historico_base_dados, 
--- Especifica a tabela "musicas" da base de dados "SpotifyClone" e atribui um alias "musicas_base_dados"
-    SpotifyClone.musicas AS musicas_base_dados 
+-- Tabela 'usuarios' é referenciada pelo alias 'base_dados_usuario'.
+    SpotifyClone.usuarios AS base_dados_usuario, 
+-- Tabela 'historico_reproducao' é referenciada pelo alias 'base_dados_reproducao'.
+    SpotifyClone.historico_reproducao AS base_dados_reproducao, 
+-- Tabela 'musicas' é referenciada pelo alias 'base_dados_musica'.
+    SpotifyClone.musicas AS base_dados_musica 
 WHERE
--- Define a condição de junção entre a coluna "id_usuario_historico" da tabela "historico_base_dados" e a coluna "id_usuario" da tabela "usuario_base_dados"
-    historico_base_dados.id_usuario_historico = usuario_base_dados.id_usuario 
--- Define a condição de junção entre a coluna "id_musica_historico" da tabela "historico_base_dados" e a coluna "id_musica" da tabela "musicas_base_dados"
-        AND historico_base_dados.id_musica_historico = musicas_base_dados.id_musica 
--- Agrupa os resultados pelo alias "pessoa_usuaria"
+-- Condição de junção: igualdade entre a coluna 'id_reproducao_usuario' da tabela 'historico_reproducao' e a coluna 'id_usuario' da tabela 'usuarios'.
+    base_dados_reproducao.id_reproducao_usuario = base_dados_usuario.id_usuario 
+-- Condição de junção: igualdade entre a coluna 'id_historico_reproducao_musica' da tabela 'historico_reproducao' e a coluna 'id_musica' da tabela 'musicas'.
+        AND base_dados_reproducao.id_historico_reproducao_musica = base_dados_musica.id_musica 
+-- Agrupa os resultados pelo nome do usuário.
 GROUP BY pessoa_usuaria 
--- Ordena os resultados em ordem ascendente com base no alias "pessoa_usuaria"
+-- Ordena os resultados em ordem ascendente pelo nome do usuário.
 ORDER BY pessoa_usuaria ASC; 
